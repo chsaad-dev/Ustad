@@ -29,12 +29,13 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("boolean", "USE_EMULATOR", "true")
+            buildConfigField("boolean", "USE_EMULATOR", "false")
             buildConfigField("String", "EMULATOR_HOST", "\"10.0.2.2\"")
             buildConfigField("int", "AUTH_EMULATOR_PORT", "9099")
             buildConfigField("int", "FIRESTORE_EMULATOR_PORT", "8080")
             buildConfigField("int", "STORAGE_EMULATOR_PORT", "9199")
         }
+
         release {
             buildConfigField("boolean", "USE_EMULATOR", "false")
             buildConfigField("String", "EMULATOR_HOST", "\"\"")
