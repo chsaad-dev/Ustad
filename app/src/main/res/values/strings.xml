@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Ustad</string>
+    <string name="slogan">Mahir Karigar 30 Minute Me</string>
+    <string name="login_title">Login to Ustad</string>
+    <string name="enter_phone">Enter your phone number to continue</string>
+    <string name="send_code">Send Verification Code</string>
+    <string name="sending_code">Sending Code...</string>
+    <string name="select_role">Select Your Role</string>
+    <string name="how_use">How will you use Ustad?</string>
+    <string name="role_customer">Customer (Mujhe Karigar Chahiye)</string>
+    <string name="role_worker">Technician / Worker (Main Karigar Hun)</string>
+    <string name="role_both">Both (Donon)</string>
+    <string name="complete_reg">Complete Registration</string>
+    <string name="cat_electrician">Electrician</string>
+    <string name="cat_plumber">Plumber</string>
+    <string name="cat_ac">AC Technician</string>
+    <string name="cat_carpenter">Carpenter</string>
+    <string name="cat_painter">Painter</string>
+    <string name="cat_bike">Bike Mechanic</string>
+    <string name="find_ustad_now">Find Ustad Now</string>
+    <string name="available_now">Available Now</string>
+    <string name="mark_ontheway">Mark On The Way</string>
+    <string name="mark_workstarted">Mark Work Started</string>
+    <string name="mark_completed">Mark Completed</string>
 </resources>

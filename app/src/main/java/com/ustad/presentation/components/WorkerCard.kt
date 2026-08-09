@@ -75,7 +75,7 @@ fun WorkerCard(
 
                     Spacer(modifier = Modifier.height(Spacing.xs))
 
-                    // Rating & Distance Row
+                    // Rating & Distance & Trust Score Row
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Rounded.Star,
@@ -89,15 +89,28 @@ fun WorkerCard(
                             style = MaterialTheme.typography.labelSmall,
                             color = TextSecondary
                         )
-                        Spacer(modifier = Modifier.width(Spacing.sm))
+                        Spacer(modifier = Modifier.width(Spacing.xs))
+                        Surface(
+                            shape = CircleShape,
+                            color = Success.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = "🔰 ${worker.trustScore.toInt()}% Trust",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Success,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
-                            text = "•  $distanceKmStr",
+                            text = "• $distanceKmStr",
                             style = MaterialTheme.typography.labelSmall,
                             color = Primary
                         )
                     }
                 }
             }
+
 
             Spacer(modifier = Modifier.height(Spacing.md))
 

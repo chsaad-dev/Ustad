@@ -160,6 +160,31 @@ fun ActiveJobScreen(
                         )
                     }
                     "workstarted" -> {
+                        var hasUploadedAfterPhoto by remember { mutableStateOf(false) }
+
+                        Surface(
+                            shape = UstadShapes.medium,
+                            color = PrimaryLight,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(Spacing.md),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = if (hasUploadedAfterPhoto) "📸 After-Photo Uploaded!" else "📸 Take/Upload After-Photo (Optional)",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Primary,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                TextButton(onClick = { hasUploadedAfterPhoto = !hasUploadedAfterPhoto }) {
+                                    Text(if (hasUploadedAfterPhoto) "Change" else "Upload")
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(Spacing.md))
+
                         UstadPrimaryButton(
                             text = "Mark Completed ✅",
                             containerColor = Success,
@@ -169,6 +194,7 @@ fun ActiveJobScreen(
                             }
                         )
                     }
+
                     "completed" -> {
                         Surface(
                             shape = UstadShapes.medium,

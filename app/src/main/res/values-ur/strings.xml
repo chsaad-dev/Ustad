@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">استاد</string>
+    <string name="slogan">ماہر کاریگر ۳۰ منٹ میں</string>
+    <string name="login_title">استاد ایپ میں لاگ ان کریں</string>
+    <string name="enter_phone">اپنا فون نمبر درج کریں</string>
+    <string name="send_code">کوڈ بھیجیں</string>
+    <string name="sending_code">کوڈ بھیجا جا رہا ہے...</string>
+    <string name="select_role">اپنا کردار منتخب کریں</string>
+    <string name="how_use">آپ استاد کیسے استعمال کریں گے؟</string>
+    <string name="role_customer">گاہک (مجھے کاریگر چاہیے)</string>
+    <string name="role_worker">کاریگر / استاد (میں کاریگر ہوں)</string>
+    <string name="role_both">دونوں (دونوں)</string>
+    <string name="complete_reg">رجسٹریشن مکمل کریں</string>
+    <string name="cat_electrician">الیکٹریشن</string>
+    <string name="cat_plumber">پلمبر</string>
+    <string name="cat_ac">اے سی ٹیکنیشن</string>
+    <string name="cat_carpenter">ترکھان / کارپینٹر</string>
+    <string name="cat_painter">پینٹر</string>
+    <string name="cat_bike">بائیک مکینک</string>
+    <string name="find_ustad_now">استاد تلاش کریں</string>
+    <string name="available_now">دستیا ب استاد</string>
+    <string name="mark_ontheway">راستے میں ہوں</string>
+    <string name="mark_workstarted">کام شروع کر دیا</string>
+    <string name="mark_completed">کام مکمل ہو گیا</string>
+</resources>

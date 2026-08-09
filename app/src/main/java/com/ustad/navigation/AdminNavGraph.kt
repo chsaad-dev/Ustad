@@ -23,6 +23,7 @@ import com.ustad.presentation.admin.*
 private sealed class AdminNavItem(val route: String, val title: String, val icon: ImageVector) {
     object Overview : AdminNavItem(Screen.AdminOverview.route, "Overview", Icons.Rounded.Analytics)
     object Verifications : AdminNavItem(Screen.AdminVerificationQueue.route, "Verifications", Icons.Rounded.VerifiedUser)
+    object Reports : AdminNavItem(Screen.AdminReports.route, "Reports", Icons.Rounded.Analytics)
 }
 
 fun NavGraphBuilder.adminNavGraph(
@@ -52,7 +53,8 @@ fun AdminScaffoldScreen(
 
     val navItems = listOf(
         AdminNavItem.Overview,
-        AdminNavItem.Verifications
+        AdminNavItem.Verifications,
+        AdminNavItem.Reports
     )
 
     Scaffold(
@@ -109,6 +111,13 @@ fun AdminScaffoldScreen(
                     onBack = { nestedNavController.popBackStack() }
                 )
             }
+            composable(Screen.AdminReports.route) {
+                AdminReportsScreen(
+                    adminViewModel = viewModel,
+                    onNavigateBack = { nestedNavController.popBackStack() }
+                )
+            }
         }
     }
 }
+

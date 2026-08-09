@@ -148,6 +148,15 @@ fun CustomerScaffoldScreen(
                     onNavigateToDevMenu = onNavigateToDevMenu
                 )
             }
+            composable("available_workers_map") {
+                AvailableWorkersMapScreen(
+                    customerViewModel = viewModel,
+                    onNavigateBack = { nestedNavController.popBackStack() },
+                    onSelectWorker = { worker ->
+                        nestedNavController.navigate(Screen.CreateJob.route)
+                    }
+                )
+            }
             composable(Screen.CustomerProfile.route) {
                 CustomerProfileScreen(
                     onLogout = onLogout,
@@ -158,12 +167,15 @@ fun CustomerScaffoldScreen(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomerProfileScreen(
     onLogout: () -> Unit,
     onNavigateToDevMenu: () -> Unit
 ) {
+    var selectedLanguage by remember { mutableStateOf("English") }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -187,6 +199,26 @@ private fun CustomerProfileScreen(
             Text("Ali (Customer Account)", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(Spacing.xs))
             Text("Phone: +92 300 1234567 | City: Sahiwal", style = MaterialTheme.typography.bodyMedium)
+            
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            // Language Selector Chip
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("App Language: ", style = MaterialTheme.typography.bodyMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Spacer(modifier = Modifier.width(Spacing.xs))
+                FilterChip(
+                    selected = (selectedLanguage == "English"),
+                    onClick = { selectedLanguage = "English" },
+                    label = { Text("English") }
+                )
+                Spacer(modifier = Modifier.width(Spacing.xs))
+                FilterChip(
+                    selected = (selectedLanguage == "Urdu"),
+                    onClick = { selectedLanguage = "Urdu (اردو)" },
+                    label = { Text("اردو") }
+                )
+            }
+
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             UstadPrimaryButton(
@@ -196,3 +228,4 @@ private fun CustomerProfileScreen(
         }
     }
 }
+

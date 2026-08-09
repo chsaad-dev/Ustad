@@ -124,41 +124,51 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(Spacing.md))
 
-            // 2-Column Grid for ALL 6 categories
-            val categories = CategoryTemplates.categories
+            // 2-Column Grid for filtered categories
+            val filteredCategories = if (searchQuery.isBlank()) {
+                CategoryTemplates.categories
+            } else {
+                CategoryTemplates.categories.filter {
+                    it.name.contains(searchQuery, ignoreCase = true)
+                }
+            }
+
+
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
-                for (i in categories.indices step 2) {
+                for (i in filteredCategories.indices step 2) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             CategoryCard(
-                                title = categories[i].name,
-                                icon = categories[i].icon,
+                                title = filteredCategories[i].name,
+                                icon = filteredCategories[i].icon,
                                 onClick = {
-                                    viewModel.selectCategory(categories[i])
-                                    onCategorySelected(categories[i])
+                                    viewModel.selectCategory(filteredCategories[i])
+                                    onCategorySelected(filteredCategories[i])
                                 }
                             )
                         }
-                        if (i + 1 < categories.size) {
+                        if (i + 1 < filteredCategories.size) {
                             Box(modifier = Modifier.weight(1f)) {
                                 CategoryCard(
-                                    title = categories[i + 1].name,
-                                    icon = categories[i + 1].icon,
+                                    title = filteredCategories[i + 1].name,
+                                    icon = filteredCategories[i + 1].icon,
                                     onClick = {
-                                        viewModel.selectCategory(categories[i + 1])
-                                        onCategorySelected(categories[i + 1])
+                                        viewModel.selectCategory(filteredCategories[i + 1])
+                                        onCategorySelected(filteredCategories[i + 1])
                                     }
                                 )
                             }
                         } else {
+
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }
             }
+
 
             Spacer(modifier = Modifier.height(Spacing.xxl))
 

@@ -2,6 +2,7 @@ package com.ustad.presentation.admin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ustad.domain.model.ReportModel
 import com.ustad.domain.model.WorkerModel
 import com.ustad.domain.repository.AdminRepository
 import com.ustad.domain.repository.AdminStats
@@ -22,6 +23,9 @@ class AdminViewModel @Inject constructor(
 
     private val _adminStats = MutableStateFlow(AdminStats())
     val adminStats: StateFlow<AdminStats> = _adminStats.asStateFlow()
+
+    val reportsFlow: StateFlow<List<ReportModel>> = adminRepository.watchReports() as? StateFlow<List<ReportModel>> 
+        ?: MutableStateFlow(emptyList())
 
     var selectedWorker = MutableStateFlow<WorkerModel?>(null)
     var alertMessage = MutableStateFlow<String?>(null)
@@ -65,6 +69,17 @@ class AdminViewModel @Inject constructor(
                 onComplete()
             }.onFailure { error ->
                 alertMessage.value = "Failed to submit rejection: ${error.message}"
+            }
+        }
+    }
+
+    fun resolveReport(reportId: String, action: String) {
+        viewModelScope.launch {
+            val result = adminRepository.resolveReport(reportId, action)
+            result.onSuccess {
+                actionSuccessMessage.value = "Report resolved."
+            }.onFailure { error ->
+                alertMessage.value = "Failed to resolve report: ${error.message}"
             }
         }
     }

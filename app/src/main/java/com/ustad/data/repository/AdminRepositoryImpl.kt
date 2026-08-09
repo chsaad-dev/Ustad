@@ -2,6 +2,7 @@ package com.ustad.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ustad.domain.model.JobModel
+import com.ustad.domain.model.ReportModel
 import com.ustad.domain.model.WorkerModel
 import com.ustad.domain.repository.AdminRepository
 import com.ustad.domain.repository.AdminStats
@@ -82,6 +83,32 @@ class AdminRepositoryImpl @Inject constructor(
             val snapshot = query.get().await()
             val jobs = snapshot.documents.mapNotNull { it.toObject(JobModel::class.java) }
             Result.success(jobs)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override fun watchReports(): Flow<List<ReportModel>> = callbackFlow {
+        val listener = firestore.collection("reports")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val reports = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(ReportModel::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(reports)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun resolveReport(reportId: String, action: String): Result<Unit> {
+        return try {
+            firestore.collection("reports").document(reportId)
+                .update("status", action)
+                .await()
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

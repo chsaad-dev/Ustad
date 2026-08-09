@@ -194,21 +194,53 @@ fun JobTrackingScreen(
 
             Spacer(modifier = Modifier.height(Spacing.xl))
 
+            var showReportDialog by remember { mutableStateOf(false) }
+
+            if (showReportDialog) {
+                com.ustad.presentation.components.ReportDialog(
+                    jobId = activeJob?.id ?: "job_123",
+                    reportedId = activeJob?.workerId ?: "worker_123",
+                    reporterRole = "customer",
+                    onDismiss = { showReportDialog = false },
+                    onSubmit = { reason, details ->
+                        showReportDialog = false
+                    }
+                )
+            }
+
             if (status == "completed") {
                 UstadPrimaryButton(
                     text = "Rate Your Experience ★",
                     onClick = onNavigateToRating
                 )
             } else {
-                UstadSecondaryButton(
-                    text = "Cancel Job Request",
-                    borderColor = Error,
-                    contentColor = Error,
-                    onClick = { viewModel.cancelActiveJob("User cancelled from app") }
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedButton(
+                            onClick = { showReportDialog = true },
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Error),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+
+                            Text("Report ⚠️")
+                        }
+                    }
+                    Box(modifier = Modifier.weight(1f)) {
+                        UstadSecondaryButton(
+                            text = "Cancel Request",
+                            borderColor = Error,
+                            contentColor = Error,
+                            onClick = { viewModel.cancelActiveJob("Customer cancelled request") }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(Spacing.xxl))
         }
     }
 }
+
