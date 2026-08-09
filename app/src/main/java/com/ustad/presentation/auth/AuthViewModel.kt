@@ -1,5 +1,6 @@
 package com.ustad.presentation.auth
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ustad.domain.model.UserModel
@@ -28,26 +29,28 @@ class AuthViewModel @Inject constructor(
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
     var phoneNumber: String = "+923001234567"
-    var verificationId: String = "mock_ver_id"
-    var otpCode: String = "123456"
+    var verificationId: String = ""
+    var otpCode: String = ""
 
     var userName: String = ""
     var userCity: String = "Sahiwal"
     var userLanguage: String = "ur"
     var selectedRole: String = "customer" // customer | worker | both ONLY
 
-    fun sendOtp(phone: String) {
+    fun sendOtp(activity: Activity, phone: String) {
         phoneNumber = phone
-        viewModelScope.launch {
-            _uiState.value = AuthUiState.Loading
-            val result = authRepository.sendOtp(phone)
-            result.onSuccess { verId ->
+        _uiState.value = AuthUiState.Loading
+        authRepository.sendOtp(
+            activity = activity,
+            phone = phone,
+            onCodeSent = { verId ->
                 verificationId = verId
                 _uiState.value = AuthUiState.OtpSent(verId, phone)
-            }.onFailure { err ->
-                _uiState.value = AuthUiState.Error(err.message ?: "Failed to send OTP")
+            },
+            onError = { errMsg ->
+                _uiState.value = AuthUiState.Error(errMsg)
             }
-        }
+        )
     }
 
     fun verifyOtp(code: String) {
@@ -64,7 +67,6 @@ class AuthViewModel @Inject constructor(
     }
 
     fun saveProfileAndRole(onSuccess: (String) -> Unit) {
-        // Enforce strict security rule: role MUST be one of customer, worker, both
         val safeRole = when (selectedRole.lowercase()) {
             "worker" -> "worker"
             "both" -> "both"

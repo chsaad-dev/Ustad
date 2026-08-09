@@ -1,6 +1,10 @@
 package com.ustad.data.repository
 
+import android.app.Activity
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ustad.domain.model.UserModel
@@ -9,6 +13,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,12 +23,34 @@ class AuthRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : AuthRepository {
 
-    private var storedVerificationId: String = "mock_verification_id"
+    override fun sendOtp(
+        activity: Activity,
+        phone: String,
+        onCodeSent: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+            .setPhoneNumber(phone)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    firebaseAuth.signInWithCredential(credential)
+                }
 
-    override suspend fun sendOtp(phone: String): Result<String> {
-        // Return verification ID token for OTP verification
-        storedVerificationId = "test_ver_id_${System.currentTimeMillis()}"
-        return Result.success(storedVerificationId)
+                override fun onVerificationFailed(e: FirebaseException) {
+                    onError(e.message ?: "Phone verification failed")
+                }
+
+                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                    onCodeSent(verificationId)
+                }
+            })
+            .build()
+
+        PhoneAuthProvider.verifyPhoneNumber(options)
+
+
     }
 
     override suspend fun verifyOtp(verificationId: String, code: String): Result<UserModel> {
@@ -31,7 +58,7 @@ class AuthRepositoryImpl @Inject constructor(
             val credential = PhoneAuthProvider.getCredential(verificationId, code)
             val authResult = firebaseAuth.signInWithCredential(credential).await()
             val firebaseUser = authResult.user ?: throw IllegalStateException("Firebase User null")
-            
+
             val user = UserModel(
                 uid = firebaseUser.uid,
                 phone = firebaseUser.phoneNumber ?: "",
@@ -39,27 +66,7 @@ class AuthRepositoryImpl @Inject constructor(
             )
             Result.success(user)
         } catch (e: Exception) {
-            // Fallback check if user is already signed in or mock mode
-            val currentUser = firebaseAuth.currentUser
-            if (currentUser != null) {
-                Result.success(
-                    UserModel(
-                        uid = currentUser.uid,
-                        phone = currentUser.phoneNumber ?: "+923001234567",
-                        role = "customer"
-                    )
-                )
-            } else {
-                // Return signed user model with generated UID for emulator test numbers
-                val uid = "user_${System.currentTimeMillis().toString().takeLast(6)}"
-                Result.success(
-                    UserModel(
-                        uid = uid,
-                        phone = "+923001234567",
-                        role = "customer"
-                    )
-                )
-            }
+            Result.failure(e)
         }
     }
 

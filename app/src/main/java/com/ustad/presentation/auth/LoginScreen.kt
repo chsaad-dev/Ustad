@@ -102,13 +102,19 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(Spacing.xl))
 
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val activity = context as? android.app.Activity
+
             UstadPrimaryButton(
                 text = if (uiState is AuthUiState.Loading) "Sending Code..." else "Send Verification Code",
                 enabled = phoneInput.isNotBlank() && uiState !is AuthUiState.Loading,
                 onClick = {
-                    viewModel.sendOtp(phoneInput)
+                    if (activity != null) {
+                        viewModel.sendOtp(activity, phoneInput)
+                    }
                 }
             )
+
 
             if (uiState is AuthUiState.Error) {
                 Spacer(modifier = Modifier.height(Spacing.md))
