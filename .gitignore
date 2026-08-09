@@ -16,16 +16,22 @@ out/
 build/
 app/build/
 
-# Gradle files
+# Gradle & Kotlin files
 .gradle/
+.kotlin/
+node_modules/
 build/
 gradlew
 gradlew.bat
+
 
 # Firebase & Secret / Private credentials
 google-services.json
 google-services-*.json
 firebase-*.json
+serviceAccountKey.json
+scripts/*.json
+
 *.keystore
 *.jks
 *.p12
