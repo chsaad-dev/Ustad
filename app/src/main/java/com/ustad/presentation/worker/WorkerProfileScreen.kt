@@ -143,8 +143,12 @@ fun WorkerProfileScreen(
 
             UstadPrimaryButton(
                 text = "Sign Out Worker Session",
-                onClick = onLogout
+                onClick = {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
+                    onLogout()
+                }
             )
+
 
             Spacer(modifier = Modifier.height(Spacing.xxl))
         }

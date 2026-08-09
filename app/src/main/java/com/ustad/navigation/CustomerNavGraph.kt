@@ -259,8 +259,12 @@ private fun CustomerProfileScreen(
 
             UstadPrimaryButton(
                 text = "Sign Out",
-                onClick = onLogout
+                onClick = {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
+                    onLogout()
+                }
             )
+
         }
     }
 }
