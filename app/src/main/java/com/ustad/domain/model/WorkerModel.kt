@@ -22,5 +22,7 @@ data class WorkerModel(
     val geohash: String = "",
     val address: String = "",
     val bio: String = "",
-    val lastOnlineAt: Long = System.currentTimeMillis()
+    val lastOnlineAt: Long = System.currentTimeMillis(),
+    val showOnLeaderboard: Boolean = true
 )
+

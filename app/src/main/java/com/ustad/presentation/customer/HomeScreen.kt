@@ -1,6 +1,7 @@
 package com.ustad.presentation.customer
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,8 +30,10 @@ import com.ustad.presentation.theme.*
 fun HomeScreen(
     viewModel: CustomerViewModel,
     onCategorySelected: (ServiceCategory) -> Unit,
+    onNavigateToCityWaitlist: (String) -> Unit,
     onNavigateToDevMenu: () -> Unit
 ) {
+
     val searchQuery by viewModel.searchQuery.collectAsState()
     val recentJobs by viewModel.recentJobs.collectAsState()
 
@@ -38,11 +41,40 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    var showCityDropdown by remember { mutableStateOf(false) }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable { showCityDropdown = true }
+                    ) {
                         Icon(Icons.Rounded.LocationOn, contentDescription = "Location", tint = Primary)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Sahiwal, Punjab", style = MaterialTheme.typography.titleMedium)
                         Icon(Icons.Rounded.ArrowDropDown, contentDescription = null)
+
+                        DropdownMenu(
+                            expanded = showCityDropdown,
+                            onDismissRequest = { showCityDropdown = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Sahiwal (Active ⚡)") },
+                                onClick = { showCityDropdown = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Lahore (Waitlist 🚀)") },
+                                onClick = {
+                                    showCityDropdown = false
+                                    onNavigateToCityWaitlist("Lahore")
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Multan (Waitlist 🚀)") },
+                                onClick = {
+                                    showCityDropdown = false
+                                    onNavigateToCityWaitlist("Multan")
+                                }
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -52,6 +84,7 @@ fun HomeScreen(
                 }
             )
         }
+
     ) { padding ->
         Column(
             modifier = Modifier

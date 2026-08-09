@@ -128,10 +128,19 @@ fun WorkerScaffoldScreen(
                     onNavigateToVerification = {
                         nestedNavController.navigate(Screen.WorkerVerification.route)
                     },
+                    onNavigateToLeaderboard = {
+                        nestedNavController.navigate("worker_leaderboard")
+                    },
                     onLogout = onLogout,
                     onNavigateToDevMenu = onNavigateToDevMenu
+                )
+            }
+            composable("worker_leaderboard") {
+                LeaderboardScreen(
+                    onNavigateBack = { nestedNavController.popBackStack() }
                 )
             }
         }
     }
 }
+

@@ -5,6 +5,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.EmojiEvents
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,6 +23,7 @@ import com.ustad.presentation.theme.*
 fun WorkerProfileScreen(
     viewModel: WorkerViewModel,
     onNavigateToVerification: () -> Unit,
+    onNavigateToLeaderboard: () -> Unit,
     onLogout: () -> Unit,
     onNavigateToDevMenu: () -> Unit
 ) {
@@ -97,7 +100,39 @@ fun WorkerProfileScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            // Referral Code Card
+            Card(
+                shape = UstadShapes.medium,
+                colors = CardDefaults.cardColors(containerColor = Surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(Spacing.lg)) {
+                    Text("Your Invite Code", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("USTAD-W789", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Primary)
+                        IconButton(onClick = {}) {
+                            Icon(Icons.Rounded.Share, contentDescription = "Share", tint = Primary)
+                        }
+                    }
+                    Text("3 invitees registered", style = MaterialTheme.typography.labelSmall, color = Success)
+                }
+            }
+
             Spacer(modifier = Modifier.height(Spacing.xl))
+
+            UstadSecondaryButton(
+                text = "View Monthly Leaderboard 🏆",
+                onClick = onNavigateToLeaderboard
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             UstadSecondaryButton(
                 text = "CNIC Verification Status (Verified 🔰)",

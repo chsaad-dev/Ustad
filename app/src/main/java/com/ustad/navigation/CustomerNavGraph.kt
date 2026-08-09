@@ -5,7 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Work
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -100,9 +102,20 @@ fun CustomerScaffoldScreen(
                     onCategorySelected = { category ->
                         nestedNavController.navigate(Screen.CreateJob.route)
                     },
+                    onNavigateToCityWaitlist = { city ->
+                        nestedNavController.navigate("city_waitlist/$city")
+                    },
                     onNavigateToDevMenu = onNavigateToDevMenu
                 )
             }
+            composable("city_waitlist/{cityName}") { backStackEntry ->
+                val city = backStackEntry.arguments?.getString("cityName") ?: "Lahore"
+                CityWaitlistScreen(
+                    cityName = city,
+                    onNavigateBack = { nestedNavController.popBackStack() }
+                )
+            }
+
             composable(Screen.CreateJob.route) {
                 CreateJobScreen(
                     viewModel = viewModel,
@@ -219,6 +232,29 @@ private fun CustomerProfileScreen(
                 )
             }
 
+            // Referral Code Card
+            Card(
+                shape = com.ustad.presentation.theme.UstadShapes.medium,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(Spacing.lg)) {
+                    Text("Your Referral Code", style = MaterialTheme.typography.labelSmall, color = com.ustad.presentation.theme.TextSecondary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("USTAD-C123", style = MaterialTheme.typography.titleLarge, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = com.ustad.presentation.theme.Primary)
+                        IconButton(onClick = {}) {
+                            Icon(androidx.compose.material.icons.Icons.Rounded.Share, contentDescription = "Share Code", tint = com.ustad.presentation.theme.Primary)
+                        }
+                    }
+                    Text("5 friends invited", style = MaterialTheme.typography.labelSmall, color = com.ustad.presentation.theme.Success)
+                }
+            }
+
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             UstadPrimaryButton(
@@ -228,4 +264,5 @@ private fun CustomerProfileScreen(
         }
     }
 }
+
 

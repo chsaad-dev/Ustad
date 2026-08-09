@@ -11,5 +11,7 @@ data class UserModel(
     val language: String = "ur",
     val city: String = "Sahiwal",
     val referralCode: String = "",
-    val referredBy: String? = null
+    val referredBy: String? = null,
+    val referralCount: Int = 0
 )
+
