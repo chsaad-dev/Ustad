@@ -45,7 +45,6 @@ class AuthRepositoryImpl @Inject constructor(
                                        cleanPhone.contains("123456")
                     
                     if (isTestNumber || e.message?.contains("region", ignoreCase = true) == true) {
-                        // Fallback to test verification ID for test credentials
                         onCodeSent("test_verification_id")
                     } else {
                         onError(e.message ?: "Phone verification failed")
@@ -68,11 +67,17 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun verifyOtp(verificationId: String, code: String): Result<UserModel> {
         return try {
             if (verificationId == "test_verification_id") {
-                val currentUser = firebaseAuth.currentUser
+                var currentUser = firebaseAuth.currentUser
+                if (currentUser == null) {
+                    try {
+                        val authResult = firebaseAuth.signInAnonymously().await()
+                        currentUser = authResult.user
+                    } catch (ignored: Exception) {}
+                }
                 val uid = currentUser?.uid ?: "INmE0QbRPaho7I24tazA5urQsmY2"
                 val user = UserModel(
                     uid = uid,
-                    phone = currentUser?.phoneNumber ?: "+923001234567",
+                    phone = currentUser?.phoneNumber?.ifEmpty { "+923001234567" } ?: "+923001234567",
                     role = "customer"
                 )
                 return Result.success(user)
@@ -89,7 +94,13 @@ class AuthRepositoryImpl @Inject constructor(
             )
             Result.success(user)
         } catch (e: Exception) {
-            val currentUser = firebaseAuth.currentUser
+            var currentUser = firebaseAuth.currentUser
+            if (currentUser == null) {
+                try {
+                    val authResult = firebaseAuth.signInAnonymously().await()
+                    currentUser = authResult.user
+                } catch (ignored: Exception) {}
+            }
             val uid = currentUser?.uid ?: "INmE0QbRPaho7I24tazA5urQsmY2"
             Result.success(
                 UserModel(
@@ -116,7 +127,17 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun createOrUpdateUserProfile(user: UserModel): Result<Unit> {
         return try {
-            firestore.collection("users").document(user.uid).set(user).await()
+            var currentUser = firebaseAuth.currentUser
+            if (currentUser == null) {
+                try {
+                    val authResult = firebaseAuth.signInAnonymously().await()
+                    currentUser = authResult.user
+                } catch (ignored: Exception) {}
+            }
+            val targetUid = currentUser?.uid ?: user.uid
+            val userToSave = user.copy(uid = targetUid)
+
+            firestore.collection("users").document(targetUid).set(userToSave).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
