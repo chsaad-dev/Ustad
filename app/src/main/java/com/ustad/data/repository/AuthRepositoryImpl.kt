@@ -28,15 +28,12 @@ class AuthRepositoryImpl @Inject constructor(
         if (current != null) return current.uid
 
         return try {
-            val authResult = firebaseAuth.signInWithEmailAndPassword("saadw7751@gmail.com", "UstadPass123!").await()
-            authResult.user?.uid ?: "INmE0QbRPaho7I24tazA5urQsmY2"
+            val freshEmail = "ustad_${System.currentTimeMillis()}@ustadapp.com"
+            val authResult = firebaseAuth.createUserWithEmailAndPassword(freshEmail, "UstadPass123!").await()
+            authResult.user?.uid ?: throw IllegalStateException("Failed to create user session")
         } catch (e: Exception) {
-            try {
-                val authResult = firebaseAuth.createUserWithEmailAndPassword("saadw7751@gmail.com", "UstadPass123!").await()
-                authResult.user?.uid ?: "INmE0QbRPaho7I24tazA5urQsmY2"
-            } catch (ex: Exception) {
-                "INmE0QbRPaho7I24tazA5urQsmY2"
-            }
+            e.printStackTrace()
+            firebaseAuth.currentUser?.uid ?: "INmE0QbRPaho7I24tazA5urQsmY2"
         }
     }
 
